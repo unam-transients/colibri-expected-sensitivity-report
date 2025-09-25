@@ -1,0 +1,773 @@
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{tikz}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+
+\usetikzlibrary{external}
+\tikzexternalize
+\tikzsetexternalprefix{tikzexternal/}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amsmath,amsfonts,amssymb}
+\renewcommand{\baselinestretch}{1.0}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\medskipamount}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{newtxtext,newtxmath}
+
+% Instead of the above, use this for arXiv:
+
+%\usepackage{txfonts}
+%\usepackage{textcomp}
+%\usepackage{eurosym}
+%\let\texteuro\euro
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\unit}[1]{\ensuremath{\mathrm{#1}}}
+\newcommand{\micron}{\mbox{$\mu$m}}
+\renewcommand{\deg}{\mbox{deg}}
+\newcommand{\sqdeg}{\mbox{$\deg^2$}}
+\newcommand{\persqdeg}{\mbox{$\deg^{-2}$}}
+\newcommand{\arcmin}{\mbox{arcmin}}
+\newcommand{\sqarcmin}{\mbox{\arcmin$^2$}}
+\newcommand{\persqarcmin}{\mbox{\arcmin$^{-2}$}}
+\newcommand{\arcsec}{\mbox{arcsec}}
+\newcommand{\sqarcsec}{\mbox{\arcsec$^2$}}
+\newcommand{\persqarcsec}{\mbox{\arcsec$^{-2}$}}
+\newcommand{\sqmm}{\mbox{mm$^2$}}
+\newcommand{\Hs}{\mbox{$H_\mathrm{s}$}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\pagestyle{empty}
+
+\begin{center}
+\Large \bfseries 
+COLIBRÍ Expected Performance
+\end{center}
+
+\begin{center}
+\begin{tabular}{ll}
+Prepared by:&Alan M. Watson\\
+&David Corre\\
+Approved by:&Alan M. Watson\\
+%&William H. Lee\\
+Reference&GFT-AN-A3135-046-UNAM\\
+Version:& 2.0\\
+Date:&9 May 2018\\
+\end{tabular}
+\end{center}
+
+\vspace{\fill}
+
+\begin{center}
+DDRAGO Project\\
+Instituto de Astronomí­a\\
+Universidad Nacional Autónoma de México
+\end{center}
+
+\newpage
+\section*{Document Change Record}
+
+\begin{itemize}
+\item Version 2.1 of 20 May 2018.
+
+Updated the model to use the image quality from version XXX of the optical design document.
+
+\item Version 2.0 of 9 May 2018.
+
+Updated the model to use the image quality from version 3.1 of the optical design document.
+
+Changed the title to “COLIBRÍ Expected Performance”.
+
+Changed the pixel size for CAGIRE to match a SOFRADIR detector.
+
+Used $H$ rather than $Hs$ for CAGIRE.
+
+Updated the benchmarks to compare $z$ and $y$ with $zy$.
+
+\item Version 1.1 of 21 January 2017.
+
+At the request of Stéphane Basa, changed the title to “GFT Expected Performance”.
+
+Use 30 second exposures for $\Hs$ and for first benchmark.
+
+Account for the secondary obscuration in the geometric efficiency rather than in the area of the telescope.
+
+\item Version 1.0 of 18 January 2017.
+
+Initial version.
+\end{itemize}
+
+\newpage
+
+\pagestyle{plain}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+This document aims to provide estimates of the performance of the GFT instruments DDRAGO and CAGIRE to guide the design of the telescope, instruments, and the GRB follow-up strategy.
+
+All magnitudes in this document are AB magnitudes.
+
+\section{Model}
+
+\subsection{Estimated System Efficiency}
+
+In the optical design document (document GFT-OD-A3135-040-UNAM), we estimated the efficiency of the hardware (the geometric efficiency, the telescope efficiency, and the instrument efficiency). We here augment this with a model for the transmissivity of the atmosphere in order to obtain the estimated system efficiency.
+
+Figure~\ref{figure:atmosphere} shows our model transmissivity of the atmosphere. We assume an airmass of 1.5 and a water vapor burden of 2.8~mm (the median value given by Otárola, Hiriart, \& Pérez-Leon 2009).
+
+The continuum absorption 300 nm to 2000 nm was calculated using the “k-model” from Schuster \& Parrao (2001), without ozone, and extrapolated from the last data point using their assumed RC index of $-4.05$ and derived aerosol index of $-0.87$. 
+
+The atmospheric line-absorption spectrum above 850~nm was generated using ATRAN (Lord 1992) made available on the SOFIA web site by Dr.\ William Vacca. The altitude was specified as 2790 meters and, following advice on the web page, the latitude was left at the default of 39 degrees. The lower wavelength limit of 0.85 µm is a limitation of ATRAN. It means that the absorption-line spectrum does not contain absorption from either the strong A-band (760 to 763~nm) and B-band (686 to 689~nm) or from other weaker lines.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   xmin=0.3,
+   xmax=1.9,
+   xlabel={$\lambda$ ({\micron})},
+   xticklabel style={
+     /pgf/number format/precision=1,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   ymin=0,
+   ymax=1,
+   minor y tick num=3,
+   ylabel={$\eta$},
+   legend style={
+     cells={anchor=west},
+     legend pos=north east,
+   },
+]
+\addplot [black] table {model/atmosphere.dat};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\caption{Transmissivity of Atmosphere.}
+\label{figure:atmosphere}
+\end{figure}
+
+Figure~\ref{figure:system-grizyJH} and \ref{figure:system-other} shows the efficiency of the system including the filter (the atmosphere, telescope, and instrument). In these figures the dotted line is the efficiency of the system excluding the filter.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   xmin=0.3,
+   xmax=1.9,
+   xlabel={$\lambda$ ({\micron})},
+   xticklabel style={
+     /pgf/number format/precision=1,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   ymin=0,
+   ymax=0.4,
+   minor y tick num=3,
+   ylabel={$\eta$},
+   legend style={
+     cells={anchor=west},
+     legend pos=north east,
+   },
+]
+\addplot [blue,dotted] table {model/system-blue.dat};
+\addplot [blue] table {model/system-g.dat};
+\addplot [blue] table {model/system-r.dat};
+\addplot [blue] table {model/system-i.dat};
+\addplot [red,dotted] table {model/system-red.dat};
+\addplot [red] table {model/system-z.dat};
+\addplot [red] table {model/system-y.dat};
+\addplot [black,dotted] table {model/system-infrared.dat};
+\addplot [black] table {model/system-J.dat};
+\addplot [black] table {model/system-H.dat};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\caption{System Efficiency in the $g$, $r$, $i$, $z$, $y$, $J$, and $H$ Filters at $X=1.5$.}
+\label{figure:system-grizyJH}
+\bigskip
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   xmin=0.3,
+   xmax=1.9,
+   xlabel={$\lambda$ ({\micron})},
+   xticklabel style={
+     /pgf/number format/precision=1,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   ymin=0,
+   ymax=0.4,
+   minor y tick num=3,
+   ylabel={$\eta$},
+   legend style={
+     cells={anchor=west},
+     legend pos=north east,
+   },
+]
+\addplot [blue,dotted] table {model/system-blue.dat};
+\addplot [blue] table {model/system-B.dat};
+\addplot [blue] table {model/system-gri.dat};
+\addplot [red,dotted] table {model/system-red.dat};
+\addplot [red] table {model/system-zy.dat};
+\addplot [black,dotted] table {model/system-infrared.dat};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\caption{System Efficiency in the $B$, $gri$, and $zy$ Filters at $X=1.5$.}
+\label{figure:system-other}
+\end{figure}
+
+Table~\ref{table:mean-efficiencies} gives the mean efficiencies of the atmosphere, geometry, telescope, instrument, and the whole system in the $grizyJH$ filters. By “mean efficiency in a filter” we mean the mean efficiency over the wavelength interval in which the mean efficiency of the filter is 0.85.
+
+\begin{table}
+\caption{Mean Efficiencies}
+\label{table:mean-efficiencies}
+\medskip
+\begin{center}
+\small
+\begin{tabular}{lccccccc}
+\hline
+\hline
+Filter&$g$&$r$&$i$&$z$&$y$&$J$&$H$\\
+\hline
+Atmosphere at $X=1.5$&0.763&0.887&0.928&0.929&0.865&0.932&0.955\\
+Geometric            &0.801&0.801&0.801&0.801&0.801&0.801&0.801\\
+Telescope            &0.701&0.677&0.646&0.677&0.755&0.834&0.856\\
+Instrument           &0.515&0.528&0.543&0.425&0.164&0.392&0.385\\
+\hline
+System               &0.220&0.254&0.261&0.214&0.082&0.244&0.252\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Zero-Points}
+
+\begin{table}
+\caption{Zero Points at $X = 1.5$}
+\label{table:performance}
+\medskip
+\begin{center}
+\small
+\begin{tabular}{lc}
+\hline
+\hline
+Filter&ZP\\
+\hline
+$g$  &$5.24 \times 10^{9\phantom{0}}$\\
+$r$  &$4.34 \times 10^{9\phantom{0}}$\\
+$i$  &$3.25 \times 10^{9\phantom{0}}$\\
+$z$  &$1.71 \times 10^{9\phantom{0}}$\\
+$y$  &$6.85 \times 10^{8\phantom{0}}$\\
+$J$  &$2.25 \times 10^{9\phantom{0}}$\\
+$H$  &$2.94 \times 10^{9\phantom{0}}$\\
+$gri$&$1.25 \times 10^{10\phantom{}}$\\
+$zy$ &$2.33 \times 10^{9\phantom{0}}$\\
+$B$  &$3.19 \times 10^{9\phantom{0}}$\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+Table~\ref{table:performance} gives the zero point $n_0$, the counts per second for a zero magnitude source, for each filter. This is calculated as
+\begin{equation}
+n_0 = \frac{A F_0}{h} \int\frac{d\nu}{\nu}\,\eta =
+\frac{A F_0}{h} \int\frac{d\lambda}{\lambda}\,\eta
+\end{equation}
+in which $F_0$ is the flux density for a zero magnitude source (3631 Jy), $A$ is the area of the telescope, $h$ is Planck’s constant, and $\eta$ is the system efficiency. We assume a 1.30~m diameter telescope.
+
+\subsection{Pixel Size}
+
+\subsubsection{DDRAGO}
+
+We assume a pixel scale of 0.38 arcsec/px.
+
+\subsubsection{CAGIRE}
+
+We assume a pixel scale of 0.64 arcsec/px.
+
+\subsection{Read Noise}
+
+\subsubsection{DDRAGO}
+
+Spectral Instruments has agreed to a specification of 6.5 electrons read noise at 1 MHz (with a goal of 5.5 electrons). We will henceforth use the specification.
+
+\subsubsection{CAGIRE}
+
+We expect to achieve a CDS read noise of about 20 electrons. It should be possible to lower this significantly using Fowler reads and up-the-ramp sampling. However, as we will see below, the sky rate in $J$ and $H$ is sufficiently high that this is typically not necessary simply to achieve sky-limited performance (although up-the-ramp sampling may be useful to increase the saturation limit and mitigate charge persistence).
+
+\subsection{Sky}
+
+Table~\ref{table:sky-brightness} shows the sky brightness in bright time and dark time in magnitudes per square arcsec at $X = 1.5$. These are taken from a document by Watson prepared for the RATIR project, and are a mixture of direct measurements and interpolations. We assume the sky brightness scales linearly with airmass.
+
+Table~\ref{table:sky-brightness} also shows the sky rates in $\mathrm{electron\,s^{-1}\,px^{-1}}$ in bright time and dark time. For the wide filters $gri$ and $zy$, we have assumed these are simply the sum of the sky rates in $g$, $r$, and $i$ and in $z$ and $y$; for our purposes this is sufficiently accurate.
+
+We can use these sky rates to calculate the “sky time”, the exposure time for which the noise in the sky background is twice the read noise. At this point, the quadrature sum of the sky noise and read noise will only be about 12\% more than the sky noise alone; essentially, the exposure will be sky limited. These sky times are shown in Table~\ref{table:sky-brightness}.
+
+For the CCDs in the very wider $gri$ and $zy$ filters, we see that exposures will be sky-limited in at most 10 seconds even in dark time. In the narrower $r$, $i$, $z$, and $y$ filters, exposures will be sky-limited in at most 40 seconds. However, in dark time in $g$, the read noise will make a significant but not dominant contribution even in 60 seconds. Obviously, at the zenith, the sky brightness will be lower and the sky time will be longer by a factor of 1.5.
+
+For the SOFRADIR detector, the exposures will be sky-limited in about 10 seconds in $J$ and about 1 second in $H$. This validates our earlier assertion that the sensitivity of CAGIRE is not strongly dependent on the read noise for typical cases.
+
+The full well of the SOFRADIR detector will probably be about 55,000 electrons (assuming 80,000 for a H2RG and scaling by the pixel size). Thus, in $H$ exposures will need to be shorter than about 45 seconds to avoid saturation. Since the $H$ exposures will be sky limited in about 1 second and since the SOFRADOR detector can be reset quickly, this will not imply a significant overhead. In what follows, we will assume exposures of 30 seconds in $H$ and 60 seconds in $J$.
+
+\begin{table}
+\caption{Sky Brightness at $X = 1.5$}
+\label{table:sky-brightness}
+\begin{center}
+\begin{tabular}{lcccccc}
+\hline
+\hline
+Filter&
+\multicolumn{2}{c}{Sky Brightness}&
+\multicolumn{2}{c}{Sky Rate}&
+\multicolumn{2}{c}{Sky Time}\\
+&
+\multicolumn{2}{c}{$\mathrm{mag\,arcsec^{-2}}$}&
+\multicolumn{2}{c}{$\mathrm{electron\,s^{-1}\,px^{-1}}$}&
+\multicolumn{2}{c}{$\mathrm{s}$}\\
+&
+dark&
+bright&
+dark&
+bright&
+dark&
+bright\\
+\hline
+$g$  &21.5&18.8&\phantom{000}2.0\phantom{}&\phantom{00}23.8\phantom{}&\phantom{0}85&\phantom{0}7\\
+$r$  &20.7&19.2&\phantom{000}4.1\phantom{}&\phantom{00}16.5\phantom{}&\phantom{0}41&\phantom{}10\\
+$i$  &19.5&18.3&\phantom{00}10.4\phantom{}&\phantom{00}31.3\phantom{}&\phantom{0}16&\phantom{0}5\\
+$z$  &18.6&17.9&\phantom{000}9.3\phantom{}&\phantom{00}17.8\phantom{}&\phantom{0}18&\phantom{0}9\\
+$y$  &17.6&17.6&\phantom{000}9.4\phantom{}&\phantom{000}9.4\phantom{}&\phantom{0}18&\phantom{}18\\
+$J$  &17.0&17.0&\phantom{0}152\phantom{.0}&\phantom{0}152\phantom{.0}&\phantom{0}11&\phantom{}11\\
+$H$  &15.0&15.0&\phantom{}1250\phantom{.0}&\phantom{}1250\phantom{.0}&\phantom{00}1&\phantom{0}1\\
+$gri$&    &    &\phantom{00}16.5\phantom{}&\phantom{00}71.6\phantom{}&\phantom{0}10&\phantom{0}2\\
+$zy$ &    &    &\phantom{00}18.7\phantom{}&\phantom{00}27.2\phantom{}&\phantom{00}9&\phantom{0}6\\
+$B$  &21.8&18.9&\phantom{000}0.9\phantom{}&\phantom{00}13.2\phantom{}&\phantom{}185&\phantom{}13\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Dark Current}
+
+\subsubsection{DDRAGO}
+
+Spectral Instruments have agreed to a specification of a dark current of less than 0.001 $\mathrm{electron\,s^{-1}\,px^{-1}}$ at the operating temperature. This is orders of magnitude lower than the sky rate in all filters.
+
+\subsubsection{CAGIRE}
+
+We assume the SOFRADIR detector will be cooled to a temperature at which its dark current is insignificant compared to the expected sky rate in $J$.
+
+\subsection{Instrument Background}
+
+\subsubsection{DDRAGO}
+
+We expect the baffles will reduce the instrument background in DDRAGO to a negligible level.
+
+\subsubsection{CAGIRE}
+
+We begin by considering the general case of a detector pixel of area $a$ and quantum efficiency $q$ illuminated by thermal emission in a solid angle $\Omega$, at a temperature $T$, and with an emissivity $\eta$. The expected count rate per pixel from thermal background will be approximately
+\begin{eqnarray}
+a q \Omega\eta \int_{\Delta\nu} d\nu\, \frac{B_\nu(T)}{h\nu}
+=
+\frac{a q \Omega\eta}{hc}\int_{\Delta\lambda}d\lambda\, \lambda B_\lambda(T),
+\end{eqnarray}
+where the integral is over the bandpass. We have assumed that the solid angle $\Omega$ is approximately perpendicular to the detector pixel, so factors of $\cos \theta$ can be ignored. We define $C$ by
+\begin{eqnarray}
+C \equiv \frac{a q}{hc}\int_{\Delta\lambda}d\lambda\, \lambda B_\lambda(T).
+\end{eqnarray}
+With this definition, the count rate is $\sum C\Omega\eta$. Values of $C$ for $q = 0.7$ and $a = 18~\micron$ are given in Table~\ref{table:C}. We assumed filters extending from 1.17 to 1.33 {\micron} in $J$ and 1.49 to 1.78 {\micron} in $H$. In applying this, we note that the range of night-time temperatures seen by the observatory’s weather station in between 2006 and 2013 is $-16$ C to $+20$ C. The median night-time temperature is about $+5$ C.
+
+\begin{table}
+\caption{Values of $C$}
+\label{table:C}
+\medskip
+\begin{center}
+\begin{tabular}{lll}
+\hline
+\hline
+$T$&\multicolumn{1}{c}{$J$}&\multicolumn{1}{c}{$H$}
+\\
+(C)&\multicolumn{2}{c}{($\mathrm{e}~\mathrm{s}^{-1}~\mathrm{px}^{-1}$)}
+\\
+\hline
+\phantom{}$-16$&$7.2 \times 10^{-4}$&$1.7 \times 10^{+1}$\\
+\phantom{}$-15$&$8.5 \times 10^{-4}$&$2.0 \times 10^{+1}$\\
+\phantom{}$-10$&$1.9 \times 10^{-3}$&$3.6 \times 10^{+1}$\\
+\phantom{0}$-5$&$4.2 \times 10^{-3}$&$6.5 \times 10^{+1}$\\
+\phantom{0}$+0$&$9.0 \times 10^{-3}$&$1.2 \times 10^{+2}$\\
+\phantom{0}$+5$&$1.9 \times 10^{-2}$&$2.0 \times 10^{+2}$\\
+\phantom{}$+10$&$3.8 \times 10^{-2}$&$3.4 \times 10^{+2}$\\
+\phantom{}$+15$&$7.5 \times 10^{-2}$&$5.7 \times 10^{+2}$\\
+\phantom{}$+20$&$1.4 \times 10^{-1}$&$9.4 \times 10^{+2}$\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+We will use the conservation of étendue to refer all emitting elements back to the location of the primary mirror at a focal distance of 4.87 meters. For this, we need to understand the equivalent solid angle of various components.
+
+\begin{itemize}
+\item
+The central obscuration. This has a diameter of 0.58 meters and a solid angle of $1.21 \times 10^{-2}$~sr.
+\item
+The primary mirror outside the central obscuration. This has an outer diameter of 1.3 meters and a solid angle of $4.87 \times 10^{-2}$~sr.
+\item
+The structure seen beyond the edge of the primary mirror but within the cold pupil mask. The pupil mask is 61 mm in diameter (the circumscribed pupil footprint will be about 59~mm in diameter and we assume the mask is oversized by about 2 mm in diameter). This corresponds to an area of 2922~$\mathrm{mm^2}$. At the position of the pupil mask, the circumscribed area of the beam is 2428~$\mathrm{mm^2}$ (center), 2348 ~$\mathrm{mm^2}$ (mid-field), 2206~$\mathrm{mm^2}$ (edge of field). Thus, in the worse case at the edge of the field, the pupil mask is oversized with respect to the 1.3 meter primary by about 32.5\% in area. This corresponds to a solid angle of $1.98 \times 10^{-2}$~sr.
+\item
+The whole pupil mask corresponds to a solid angle of about $8.06 \times 10^{-2}$~sr (the sum of the previous components).
+\end{itemize}
+
+\begin{table}
+\caption{Instrument Background for CAGIRE}
+\label{table:instrument-background}
+\medskip
+\begin{center}
+\begin{tabular}{lcccc}
+\hline
+\hline
+$T$&\multicolumn{3}{c}{$J$}&\multicolumn{1}{c}{$H$}
+\\
+\cline{2-4}
+&In-Band&Out-of-Band&Total&Total\\
+(C)&
+($\mathrm{e}~\mathrm{s}^{-1}~\mathrm{px}^{-1}$)&
+($\mathrm{e}~\mathrm{s}^{-1}~\mathrm{px}^{-1}$)&
+($\mathrm{e}~\mathrm{s}^{-1}~\mathrm{px}^{-1}$)&
+($\mathrm{e}~\mathrm{s}^{-1}~\mathrm{px}^{-1}$)\\
+\hline
+$\phantom{}-16$&$2.7 \times 10^{-5}$&$1.9 \times 10^{-2}$&$1.9 \times 10^{-2}$&$\phantom{0}0.67\phantom{}$\\
+$\phantom{}-15$&$3.3 \times 10^{-5}$&$2.1 \times 10^{-2}$&$2.1 \times 10^{-2}$&$\phantom{0}0.76\phantom{}$\\
+$\phantom{}-10$&$7.5 \times 10^{-5}$&$4.1 \times 10^{-2}$&$4.1 \times 10^{-2}$&$\phantom{0}1.4\phantom{0}$\\
+$\phantom{0}-5$&$1.6 \times 10^{-4}$&$7.4 \times 10^{-2}$&$7.4 \times 10^{-1}$&$\phantom{0}2.6\phantom{0}$\\
+$\phantom{0}+0$&$3.5 \times 10^{-4}$&$1.3 \times 10^{-1}$&$1.3 \times 10^{-1}$&$\phantom{0}4.7\phantom{0}$\\
+$\phantom{0}+5$&$7.2 \times 10^{-4}$&$2.3 \times 10^{-1}$&$2.3 \times 10^{-1}$&$\phantom{0}8.2\phantom{0}$\\
+$\phantom{}+10$&$1.5 \times 10^{-3}$&$4.0 \times 10^{-1}$&$4.0 \times 10^{-1}$&$\phantom{}14\phantom{.00}$\\
+$\phantom{}+15$&$2.9 \times 10^{-3}$&$6.8 \times 10^{-1}$&$6.8 \times 10^{-1}$&$\phantom{}24\phantom{.00}$\\
+$\phantom{}+20$&$5.6 \times 10^{-3}$&$1.1 \times 10^{-0}$&$1.1 \times 10^{-0}$&$\phantom{}39\phantom{.00}$\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{semilogyaxis}[
+   xmin=-20,
+   xmax=20,
+   xlabel={$T$ (C)},
+   xticklabel style={
+     /pgf/number format/precision=0,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   ylabel={Background ($\mathrm{electron\,px^{-1}\,s^{-1}}$)},
+   legend style={
+     cells={anchor=west},
+     legend pos=south east,
+   },
+]
+\addplot [black,dashed] table[x index=0,y index=3] {instrument-background.dat};
+\addlegendentry{$J$}
+\addplot [black] table[x index=0,y index=4] {instrument-background.dat};
+\addlegendentry{$H$}
+\end{semilogyaxis}
+\end{tikzpicture}
+\end{center}
+\caption{Instrument Background in $J$ and $H$ for CAGIRE.}
+\label{figure:instrument-background}
+\end{figure}
+
+
+We are now in a position to calculate the backgrounds in $J$ and $H$. In both cases, there are two components: the in-band emission from warm components seen through the filter and the out-of-band emission blocked by the filter. However, in $H$ the out-of-band emissivity (in $J$ and below) is negligible.
+
+For the in-band emission, we assume that the emissivity is 1 for the central obscuration and the structure seen beyond the edge of the primary and is 0.5 for the primary mirror (i.e., the telescope and instrument optics have a transmissivity of about 0.5). The sum of $\Omega\eta$ is then $5.63 \times 10^{-2}$~sr. This must be multiplied by $C_J$ or $C_H$ to obtain the in-band instrument background as a function of temperature.
+
+For the out-of-band emission with the $J$ filter, we assume that the $J$ filter will be highly reflective in $H$ and the cryostat window will be over-sized, so that the detector will “see” back into the cryostat over the entire solid angle of the pupil mask. If the reflectivity of the filter is 0.98 in $H$, the effective emissivity is about 0.02. The sum of $\Omega\eta$ is then $1.61 \times 10^{-3}$~sr. This must be multiplied by $C_H$ (not $C_J$) to obtain the instrument background as a function of temperature.
+
+The estimated in-band, out-of-band, and total instrumental backgrounds are given in Table~\ref{table:instrument-background} and the total instrumental background is shown in Figure~\ref{figure:instrument-background}. As expected, the instrument background in $J$ is dominated by the out-of-band emission in $H$. In the worst case, at $+20$ C, the expected instrument backgrounds are about 1 $\mathrm{electron\,px^{-1}\,s^{-1}}$ in $J$ and 40 $\mathrm{electron\,px^{-1}\,s^{-1}}$ in $H$. These are factors of about 150 and 30 lower than the anticipated sky background at $X=1.5$ (even ignoring any likely increase in the sky background on warm nights). Thus, we do not expect the instrument background noise to be a significant contributor to the total noise.
+
+\subsection{Total Image Quality}
+
+We assume that the total image quality is limited by a combination of seeing, instrument and telescope optics, and pixelation. We approximate this by adding the seeing FWHM, optics FWHM, and the pixel size on quadrature. 
+
+We assume median zenith seeing conditions of 0.79 arcsec FWHM at 500 nm (Skidmore et al.\@ 2012) scaled as wavelength as $\lambda^{-1/5}$ and to an airmass of 1.5 as $X^{3/5}$. This gives a seeing of 1.01 arcsec FWHM at 500 nm.
+
+We take values of $d_{80}$ from our optical design document (GFT-OD-A3135-040-UNAM). We use the 90\% values at the mid-field position. We assume the optics delivers a roughly Gaussian profile, so that the FWHM $W_{50}$ is given by $W_{50} = 0.60 d_{80}$.
+
+Table~\ref{table:image-fwhm} gives values of the FWHM for these conditions (median seeing and $X = 1.5$). In the blue and red channels the FWHM varies from 1.17 arcsec in $B$ to 1.04 arcsec in $y$ and in the infrared channel it is about 1.23 arcsec in both $J$ and $H$. Sampling will be good in the CCDs (2.7 to 3.1 pixels per FWHM) but as expected we will have slight undersampling in the infrared (about 1.9 pixels per FWHM).
+
+\begin{table}
+\caption{Expected Image FWHM for Median Seeing at $X = 1.5$}
+\label{table:image-fwhm}
+\medskip
+\begin{center}
+\begin{tabular}{lcccc}
+\hline
+\hline
+Filter&
+Seeing&
+Optics&
+Pixel&
+Total\\
+&(arcsec)&(arcsec)&(arcsec)&(arcsec)\\
+\hline
+$g$  &1.02&0.39&0.38&1.15\\
+$r$  &0.97&0.41&0.38&1.11\\
+$i$  &0.93&0.44&0.38&1.10\\
+$z$  &0.90&0.34&0.38&1.04\\
+$y$  &0.88&0.39&0.38&1.04\\
+$J$  &0.84&0.62&0.65&1.22\\
+$H$  &0.80&0.69&0.65&1.23\\
+$gri$&0.97&0.43&0.38&1.13\\
+$zy$ &0.89&0.37&0.38&1.04\\
+$B$  &1.03&0.41&0.38&1.17\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\subsection{Overhead}
+
+We will assume the overhead between exposures is 5 seconds. Reading the CCDs will take about 4 seconds (at 1 MHz with 4 ports), so this implies that dithering with the telescope must occur simultaneously with reading.
+
+\section{Limiting Magnitude for Point Sources}
+
+The limiting magnitude for a point source depends on the desired signal-to-noise ratio, the exposure time, the number of exposures that are combined, the image quality, and the aperture size.
+
+The signal-to-noise ratio $r_1'$ in a single exposure of exposure time $t_1$, ignoring sky-subtraction noise, is given by
+\begin{equation}
+r_1' = \frac{f x n_0 t}{\sqrt{f x n_0 t_1 + n_\mathrm{pix}\left(\sigma_r^2 + n_\mathrm{sky}t_1\right)}},
+\end{equation}
+in which $x \equiv F_\nu/F_0$ is the ratio of the source flux density to the zero-point flux density, $f$ is the fraction of light included in the synthetic aperture, $n_\mathrm{pix}$ is the number of pixels in the synthetic aperture, $\sigma_r$ is the read noise, and $n_\mathrm{sky}$ is the sky rate in $\mathrm{electron\,s^{-1}\,px^{-1}}$.
+
+For a Gaussian profile, $z(r) = z(0) e^{-(r/\sigma)^2}$, we have
+\begin{equation}
+f = 1-e^{-(r/\sigma)^2},
+\end{equation}
+and the FWHM $W_{50}$ is related to $\sigma$ by $W_{50} = 2\sigma\sqrt{\ln2} \approx 1.665 \sigma$. It can be shown that the optimal aperture radius in the background-limited case is approximately $0.675 W_{50}$. That is, the optimum aperture diameter is about 1.35 times the FWHM. (Note that this aperture contains 71\% of the light, and so its diameter is quite close to $d_{80}$.)
+
+When we combine $N$ exposures, for each one we effectively estimate the sky in each image from the $N-1$ other images. The signal-to-noise ratio in a single exposure, $r_1$, including sky-subtraction noise, is given by
+\begin{equation}
+r_1 = \frac{fx n_0 t_1}{\sqrt{fx n_0 t_1 + n_\mathrm{pix}\left(\sigma_r^2 + n_\mathrm{sky} t_1\right)\left[1+(N-1)^{-1}\right]}}.
+\end{equation}
+The total signal-to-noise ratio in the combined image, $r$, is then given by
+\begin{equation}
+r = r_1 \sqrt{N}.
+\end{equation}
+These equations can be used to find the signal-to-noise ratio $r$ in terms of the exposure parameters and a given source magnitude. They can also be inverted to give the source magnitude in terms of the exposure parameters and a given signal-to-noise ratio. 
+
+\section{Benchmarks}
+
+For our benchmarks, we will consider $10\sigma$ limiting magnitudes. We do not consider the $5\sigma$ limiting magnitudes to be useful. The size of the ECLAIRs localization is about two million square arcsec and a $5\sigma$ event corresponds approximately to a one-in-two-million fluctuation. Thus, we expect to see a spurious $5\sigma$ fluctuation in most images of ECLAIRs localizations.
+
+\begin{table}
+\caption{Benchmark 10$\sigma$ Limiting Magnitudes}
+\label{table:limiting-magnitude}
+\medskip
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+\hline
+Filter&Exposures&\multicolumn{2}{c}{Limiting Magnitude}\\
+&&dark&bright\\
+\hline
+\multicolumn{4}{c}{Benchmark 1}\\
+\hline
+$g$  &$\phantom{00}8 \times 30$~s&22.20&21.14\\
+$r$  &$\phantom{00}8 \times 30$~s&21.98&21.36\\
+$i$  &$\phantom{00}8 \times 30$~s&21.39&20.85\\
+$z$  &$\phantom{00}8 \times 30$~s&20.48&20.17\\
+$y$  &$\phantom{00}8 \times 30$~s&19.49&19.49\\
+$J$  &$\phantom{00}8 \times 30$~s&19.68&19.68\\
+$H$  &$\phantom{0}16 \times 13$~s&18.77&18.77\\
+$gri$&$\phantom{00}8 \times 30$~s&22.30&21.55\\
+$zy$ &$\phantom{00}8 \times 30$~s&20.49&20.30\\
+$B$  &$\phantom{00}8 \times 30$~s&21.83&20.86\\
+\hline
+\multicolumn{4}{c}{Benchmark 2}\\
+\hline
+$g$  &$\phantom{}10 \times 60$~s&22.85&21.67\\
+$r$  &$\phantom{}10 \times 60$~s&22.58&21.90\\
+$i$  &$\phantom{}10 \times 60$~s&21.95&21.38\\
+$z$  &$\phantom{}15 \times 60$~s&21.28&20.96\\
+$y$  &$\phantom{}15 \times 60$~s&20.29&20.29\\
+$J$  &$\phantom{}15 \times 60$~s&20.46&20.46\\
+$H$  &$\phantom{}30 \times 28$~s&19.56&19.56\\
+\hline
+\multicolumn{4}{c}{Benchmark 3}\\
+\hline
+$g$  &$\phantom{}10 \times 60$~s&22.85&21.67\\
+$r$  &$\phantom{}10 \times 60$~s&22.58&21.90\\
+$i$  &$\phantom{}10 \times 60$~s&21.95&21.38\\
+$zy$ &$\phantom{}30 \times 60$~s&21.67&21.47\\
+$J$  &$\phantom{}15 \times 60$~s&20.46&20.46\\
+$H$  &$\phantom{}30 \times 28$~s&19.56&19.56\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   xmin=0,
+   xmax=2,
+   xlabel={$\lambda$ ({\micron})},
+   xticklabel style={
+     /pgf/number format/precision=1,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   y dir=reverse,
+   ymin=18.5,
+   ymax=23.5,
+   minor y tick num=3,
+   ylabel={AB},
+   legend style={
+     cells={anchor=west},
+     legend pos=south east,
+   },
+]
+\addplot [mark=*] table[x index=0,y index=1] {benchmark-1.dat};
+\addlegendentry{Dark}
+\addplot [mark=*,dashed] table[x index=0,y index=2] {benchmark-1.dat};
+\addlegendentry{Bright}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\caption{Benchmark 1 ($10\sigma$ limiting magnitudes in 280 seconds real time in $gri$, $zy$, and $H$).}
+\label{figure:limiting-magnitude-1}
+\end{figure}
+
+As a first benchmark, we will determine the $10\sigma$ limiting magnitude for eight 30-second exposures with a total time of 280 seconds. This might correspond to a initial observation of a field. These limits are shown in Table~\ref{table:limiting-magnitude}. We will likely use $gri$, $zy$, and $H$ for initial observations, and will reach magnitudes 22.3, 20.5, and 18.8 in dark time and magnitudes 21.6, 20.3, and 18.8 in bright time. These limits are shown in Figure~\ref{figure:limiting-magnitude-1}.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   xmin=0,
+   xmax=2,
+   xlabel={$\lambda$ ({\micron})},
+   xticklabel style={
+     /pgf/number format/precision=1,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   y dir=reverse,
+   ymin=18.5,
+   ymax=23.5,
+   minor y tick num=3,
+   ylabel={AB},
+   legend style={
+     cells={anchor=west},
+     legend pos=south east,
+   },
+]
+\addplot [mark=*] table[x index=0,y index=1] {benchmark-2.dat};
+\addlegendentry{Dark}
+\addplot [mark=*,dashed] table[x index=0,y index=2] {benchmark-2.dat};
+\addlegendentry{Bright}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\caption{Benchmark 2 ($10\sigma$ limiting magnitudes in 1950 seconds real time in $g$, $r$, $i$, $z$, $y$, $J$, and $H$).}
+\label{figure:limiting-magnitude-2}
+\end{figure}
+
+As a second benchmark, we will determine the $10\sigma$ limiting magnitude for a total time of
+1950 seconds split into 60-second exposures in $g$, $r$, $i$, $z$, $y$, and $J$ and 30-second exposures in $H$, assuming that the blue channel is divided equally between $g$, $r$, and $i$ (ten exposures each), the red channel is divided equally between $z$ and $y$ (fifteen exposures), and the infrared channel is divided equally between $J$ (fifteen exposures) and $H$ (thirty exposures). This corresponds to observations to obtain a photometric redshift. These limits are shown in Figure~\ref{figure:limiting-magnitude-2}.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   xmin=0,
+   xmax=2,
+   xlabel={$\lambda$ ({\micron})},
+   xticklabel style={
+     /pgf/number format/precision=1,
+     /pgf/number format/fixed,
+     /pgf/number format/fixed zerofill
+   },
+   minor x tick num=3,
+   y dir=reverse,
+   ymin=18.5,
+   ymax=23.5,
+   minor y tick num=3,
+   ylabel={AB},
+   legend style={
+     cells={anchor=west},
+     legend pos=south east,
+   },
+]
+\addplot [mark=*] table[x index=0,y index=1] {benchmark-3.dat};
+\addlegendentry{Dark}
+\addplot [mark=*,dashed] table[x index=0,y index=2] {benchmark-3.dat};
+\addlegendentry{Bright}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\caption{Benchmark 3 ($10\sigma$ limiting magnitudes in 1950 seconds real time in $g$, $r$, $i$, $zy$, $J$, and $H$).}
+\label{figure:limiting-magnitude-3}
+\end{figure}
+
+Figure~\ref{figure:limiting-magnitude-2} clearly shows that our sensitivity in $y$ lies quite above the locus defined by the sensitivity in the other bands. This is not unexpected, given the relatively low quantum efficiency of even our deep-depleted CCDs in $y$. It might be worth considering using $zy$ rather than $z$ and $y$ for photometric redshifts, but to decide on this we would need to study the gain from lower photometric noise against the loss of spectral resolution.
+
+In our third benchmark we investigate this posibility, we will determine the $10\sigma$ limiting magnitude for a total time of
+1950 seconds split into 60-second exposures in $g$, $r$, $i$, $zy$, and $J$ and 30-second exposures in $H$, assuming that the blue channel is divided equally between $g$, $r$, and $i$ (ten exposures each), the red channel used exclusively for $zy$ (thirty exposures), and the infrared channel is divided equally between $J$  (fifteen exposures) and $H$ (thirty exposures). This corresponds to observations to obtain a photometric redshift. These limits are shown in Table~\ref{table:limiting-magnitude} and Figure~\ref{figure:limiting-magnitude-3}. This compensates for the lower sensitivity in the red channel, but at a cost in lower spectral resolution.
+
+\section*{References}
+
+Lord, S.~D., 1992, NASA Technical Memorandum 103957
+
+Otárola, A., Hiriart, D., and Pérez-León, J.~E. 2009, RMxAA, 45, 161
+
+Schuster, W.~J., \& Parrao, L. 2001, RMxAA, 37, 187
+
+\end{document}
